@@ -30,7 +30,7 @@ class Track:
                     # header = ['x','y']
                     # writer = csv.DictWriter(file,fieldnames=header)
                     writer.writeheader()
-                writer.writerow({'x':m.position()[0], 'y':m.position()[1]})
+                writer.writerow({'x':round(m.position()[0],1), 'y':round(m.position()[1],1)})
             print(f'Tracking your mouse movement every {self.period} seconds')
             time.sleep(self.period)
 
@@ -47,7 +47,7 @@ class Track:
 
 
 if __name__ == '__main__':
-    track = Track(3,'file',True,'/home/doug/Desktop/track/track.csv','/home/doug/Desktop/track/keys.txt')
+    track = Track(3,'file',True,'/Users/markshaio/Desktop/Proof_of_concept/Track/Track/track2.csv','/Users/markshaio/Desktop/Proof_of_concept/Track/Track/keys2.txt')
     mouse_process = multiprocessing.Process(name='mouse_process', target=track.track_mouse)
     keyboard_process = multiprocessing.Process(name='keyboard_process', target=track.track_keyboard)
     mouse_process.start()
