@@ -24,9 +24,9 @@ class Analyse:
                 if (y_coords[i+1] - y_coords[i]) == 0:
                     self.gradient.append(0)
                 else:
-                    gradient = (x_coords[i+1] - x_coords[i])/(y_coords[i+1] - y_coords[i])
+                    gradient = (y_coords[i+1] - y_coords[i])/(x_coords[i+1] - x_coords[i])
                     self.gradient.append(gradient)
-        print(f'gradient: {self.gradient[:10]}, max: {max(self.gradient)}, min: {min(self.gradient)}')
+        # print(f'gradient: {self.gradient[:10]}, max: {max(self.gradient)}, min: {min(self.gradient)}')
         return self.gradient
 
     def get_gradient_count_by_type(self):
@@ -163,16 +163,41 @@ class Analyse:
     def get_mouse_movement_duration_by_frequency(self):
         """
         Group mouse movement by stagnant duration, ie how long does the mouse stay at the same position?
-
-        TODO:
+        
+        Returns:
+            frequency (dict): Frequency of mouse stagnation by time,
+            eg: {'+0': 312, '+2': 53, '+4': 29, '+6': 18, '+8': 10, '+10': 5, '>10': 21}
         """
-        frequency = {"+0": 0, "+2": 0}
+        frequency = {"+0": 0, "+2": 0, "+4": 0, "+6": 0, "+8": 0, "+10": 0, ">10": 0}
         x_coords = self.data[self.data.columns[0]].to_numpy()
         y_coords = self.data[self.data.columns[1]].to_numpy()
-        pass
+        time = 0
+        
+        for i in range(len(x_coords)):
+            if i < len(x_coords) - 1 and (x_coords[i + 1] == x_coords[i]) and (y_coords[i + 1] == y_coords[i]):
+                time += 1
+            else:
+                if time == 0: 
+                    frequency["+0"] += 1
+                elif time == 1: 
+                    frequency["+2"] += 1
+                elif time == 2:
+                    frequency["+4"] += 1
+                elif time == 3:
+                    frequency["+6"] += 1
+                elif time == 4:
+                    frequency["+8"] += 1
+                elif time == 5:
+                    frequency["+10"] += 1
+                else:
+                    frequency[">10"] += 1
+                time = 0
+        print(f'freq: {frequency}')
+        return frequency
 
-analyse = Analyse("./track3.csv")
+analyse = Analyse("./track2.csv")
 analyse.get_file_content()
 analyse.get_gradient_count_by_type()
-analyse.get_magnitude_by_frequency()
-analyse.get_direction_by_frequency()
+# analyse.get_magnitude_by_frequency()
+# analyse.get_direction_by_frequency()
+# analyse.get_mouse_movement_duration_by_frequency()

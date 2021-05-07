@@ -4,6 +4,8 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
+from analyse import Analyse
+
 sns.set_theme()
 
 class Graph:
@@ -71,8 +73,28 @@ class HeatMap(Graph):
         ax = sns.heatmap(self.base_heatmap)
         plt.show()
         
-mouse_heatmap = HeatMap("./track.csv")
-# mouse_heatmap.get_max_column_value()
+class BarGraph:
+    
+    def __init__(self, data):
+        self.data = data
+        
+    def draw_bar_graph(self):
+        x_ref = list(self.data.keys())
+        y_ref = list(self.data.values())
+                
+        x_pos = [i for i, _ in enumerate(x_ref)]
+        plt.bar(x_pos,y_ref,color='green')
+        plt.xlabel('Stagnation period (s)')
+        plt.ylabel('Frequency')
+        plt.xticks(x_pos,x_ref)
+        plt.show()
+        
+mouse_heatmap = HeatMap("./track4.csv")
 mouse_heatmap.create_base_heatmap()
 mouse_heatmap.fill_heatmap()
-# print(mouse_heatmap.get_file_content())
+
+analysis = Analyse("./track4.csv")
+analysis.get_file_content()
+
+mouse_bar_chart = BarGraph(analysis.get_mouse_movement_duration_by_frequency())
+mouse_bar_chart.draw_bar_graph()
