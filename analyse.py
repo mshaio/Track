@@ -195,7 +195,7 @@ class Analyse:
         print(f'freq: {frequency}')
         return frequency
 
-analyse = Analyse("./track2.csv")
+analyse = Analyse("./TRACK_FOREVER.csv")
 analyse.get_file_content()
 analyse.get_gradient_count_by_type()
 # analyse.get_magnitude_by_frequency()

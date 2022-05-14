@@ -1,4 +1,3 @@
-from distutils.command import config
 from pymouse import PyMouse
 import csv
 import time
@@ -8,17 +7,13 @@ import string
 import multiprocessing
 import redis
 import json
-import requests
-
-from config import (POSTGRES_URL, TRACKING_WAIT_PERIOD, MOUSE_FILE_PATH, KEYBORAD_FILE_PATH)
 
 class Track:
     
-    def __init__(self,period,storage_type,forever,category,mouse_file_path=None,keyboard_file_path=None,track_duration_per_dataset=1000,track_cycle_count=10):
+    def __init__(self,period,storage_type,forever,mouse_file_path=None,keyboard_file_path=None,track_duration_per_dataset=1000,track_cycle_count=10):
         self.period = period
         self.storage_type = storage_type
         self.forever = forever
-        self.category = category
         if storage_type == 'file':
             self.mouse_file_path = mouse_file_path
         if storage_type == 'db':
@@ -32,20 +27,11 @@ class Track:
         Stores your mouse movement data every given time period and saves in a csv
         """
         m = PyMouse()
-        x_coord, y_coord = round(m.position()[0]),round(m.position()[1])
 
         if redis_active or postgres_active:
             
-            if postgres_active:
-                try:
-                    print(x_coord,y_coord)
-                    r = requests.post(POSTGRES_URL, data={'x_coord':x_coord, 'y_coord':y_coord, 'category':self.category})
-                    print("Postgres request sent")
-                except:
-                    print("Posting failed")
-
-
             if redis_active:
+
                 # Convert the data to a string
                 if self.redis_client.get('mouse') is not None:
                     print(f'redis: {json.loads(self.redis_client.get("mouse"))}')
@@ -71,8 +57,10 @@ class Track:
                     data_cache['x'] = [m.position()[0]]
                     data_cache['y'] = [m.position()[1]]
                     self.redis_client.set('mouse', json.dumps(data_cache))
-                print(f'Tracking your mouse movement every {self.period} seconds, in memory')
 
+                
+
+                print(f'Tracking your mouse movement every {self.period} seconds, in memory')
         else:
             file = open(self.mouse_file_path + str(suffix) + ".csv",'a',newline='')
             header = ['x','y']
@@ -111,10 +99,13 @@ class Track:
             file.close()
             print(f'You clicked the key {keyboard.read_key()}')
 
+    @staticmethod
+    def test():
+        print("Tracking Test")
 
 if __name__ == '__main__':
-    track = Track(TRACKING_WAIT_PERIOD,'db',True,'w')
-    mouse_process = multiprocessing.Process(name='mouse_process', target=track.track_mouse(redis_active=False, postgres_active=True))
-    # keyboard_process = multiprocessing.Process(name='keyboard_process', target=track.track_keyboard)
+    track = Track(2,'db',True,'/Users/markshaio/Desktop/TRACK_','/Users/markshaio/Desktop/KEYS.txt')
+    mouse_process = multiprocessing.Process(name='mouse_process', target=track.track_mouse(redis_active=True, postgres_active=False))
+    keyboard_process = multiprocessing.Process(name='keyboard_process', target=track.track_keyboard)
     mouse_process.start()
-    # keyboard_process.start()
+    keyboard_process.start()

@@ -89,11 +89,11 @@ class BarGraph:
         plt.xticks(x_pos,x_ref)
         plt.show()
         
-mouse_heatmap = HeatMap("./track4.csv")
+mouse_heatmap = HeatMap("./TRACK_FOREVER.csv")
 mouse_heatmap.create_base_heatmap()
 mouse_heatmap.fill_heatmap()
 
-analysis = Analyse("./track4.csv")
+analysis = Analyse("./TRACK_FOREVER.csv")
 analysis.get_file_content()
 
 mouse_bar_chart = BarGraph(analysis.get_mouse_movement_duration_by_frequency())
