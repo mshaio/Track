@@ -6,13 +6,11 @@ import matplotlib.pyplot as plt
 import math
 import requests
 
-from config import (POSTGRES_URL)
-
 class Analyse:
 
-    def __init__(self,file=None):
+    def __init__(self,file=None, data=None):
         self.file = file
-        self.data = ''
+        self.data = data
         self.gradient = []
 
     def get_file_content(self):
@@ -20,12 +18,12 @@ class Analyse:
         return self.data
     
     def get_data_from_postgres(self):
-
-        try:
-            response = requests.get(POSTGRES_URL)
-            self.data = response.json()
-        except:
-            print(response.status_code,"An error occured while getting data from postgres")
+        pass
+        # try:
+        #     response = requests.get(POSTGRES_URL)
+        #     self.data = response.json()
+        # except:
+        #     print(response.status_code,"An error occured while getting data from postgres")
 
 
     def get_gradient(self):
@@ -63,7 +61,7 @@ class Analyse:
                 neutral_gradients.append(i)
             else:
                 positive_gradients.append(i)
-        print(f'neg: {len(negative_gradients)}, neu: {len(neutral_gradients)}, pos: {len(positive_gradients)}')
+        # print(f'neg: {len(negative_gradients)}, neu: {len(neutral_gradients)}, pos: {len(positive_gradients)}')
         return len(negative_gradients), len(neutral_gradients), len(positive_gradients)
 
     def get_negative_gradients(self):
@@ -229,11 +227,11 @@ class Analyse:
         # print(f'freq: {frequency}')
         return frequency
 
-analyse = Analyse()
-analyse.get_data_from_postgres()
+# analyse = Analyse()
+# analyse.get_data_from_postgres()
 # analyse = Analyse("./TRACK_FOREVER.csv")
 # analyse.get_file_content()
-print(f'gradient type count: {analyse.get_gradient_count_by_type()}')
-print(f'magnitude count: {analyse.get_magnitude_by_frequency()}')
-print(f'direction count: {analyse.get_direction_by_frequency()}')
-print(f'duration count: {analyse.get_mouse_movement_duration_by_frequency()}')
+# print(f'gradient type count: {analyse.get_gradient_count_by_type()}')
+# print(f'magnitude count: {analyse.get_magnitude_by_frequency()}')
+# print(f'direction count: {analyse.get_direction_by_frequency()}')
+# print(f'duration count: {analyse.get_mouse_movement_duration_by_frequency()}')
